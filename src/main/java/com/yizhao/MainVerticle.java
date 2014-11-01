@@ -38,6 +38,7 @@ public class MainVerticle extends Verticle {
 	ApiOfWithoutCurlBody mApiOfWithoutCurlBody;
 	ApiOfWithCurlBodyApi mApiOfWithCurlBodyApi;
 	ApiOfWithMultiPart mApiOfWithMultiPart;
+	ApiOfWithEventBusToMySql mApiOfWithEventBusToMySql;
 
 	private void init() {
 		JsonObject dbConfig = null;
@@ -93,6 +94,16 @@ public class MainVerticle extends Verticle {
 				container.logger().info("Invoked at mApiOfWithMultiPart API");
 				mApiOfWithMultiPart = new ApiOfWithMultiPart();
 				mApiOfWithMultiPart.execute(vertx, bridge_between_server_and_client);
+			}
+		});
+		
+		// curl -v -X POST http://localhost:8080/apiofwitheventbustomysql
+		httpRouteMatcher.post("/apiofwitheventbustomysql", new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(final HttpServerRequest bridge_between_server_and_client) {
+				container.logger().info("Invoked at mApiOfWithEventBusToMySql API");
+				mApiOfWithEventBusToMySql = new ApiOfWithEventBusToMySql();
+				mApiOfWithEventBusToMySql.execute(vertx, bridge_between_server_and_client);
 			}
 		});
 
