@@ -30,7 +30,7 @@ public class ApiOfWithMultiPart extends SuperClassOfApis {
 						public void handle(Void arg0) {
 							JsonObject response = new JsonObject();
 							response.putString("status", "0");
-							response.putString("statusDescription", "Success");
+							response.putString("statusDescription", "OK");
 							response.putString("MultiPartBody", Arrays.toString(mainBuffer.getBytes()));
 							bridge_between_server_and_client.response().end(response.encodePrettily());
 						}

@@ -36,13 +36,14 @@ public class MainVerticle extends Verticle {
 	SingletonOfConstantsS cs = SingletonOfConstantsS.getInstance();
 	SingletonOfConfig mSingletonOfConfig = SingletonOfConfig.getInstance();
 	ApiOfWithoutCurlBody mApiOfWithoutCurlBody;
+	ApiOfWithCurlBodyApi mApiOfWithCurlBodyApi;
 	ApiOfWithMultiPart mApiOfWithMultiPart;
+
 	private void init() {
 		JsonObject dbConfig = null;
 		try {
 			dbConfig = mSingletonOfConfig.getDbConnectionParam();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -74,7 +75,17 @@ public class MainVerticle extends Verticle {
 				mApiOfWithoutCurlBody.execute(vertx, bridge_between_server_and_client);
 			}
 		});
-		
+
+		// curl -v -X POST http://localhost:8080/withcurlbody -d '{"body":123}'
+		httpRouteMatcher.post("/withcurlbody", new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(final HttpServerRequest bridge_between_server_and_client) {
+				container.logger().info("Invoked at withcurlbody API");
+				mApiOfWithCurlBodyApi = new ApiOfWithCurlBodyApi();
+				mApiOfWithCurlBodyApi.execute(vertx, bridge_between_server_and_client);
+			}
+		});
+
 		// curl -v -X POST http://localhost:8080/withmultipart -F "file=@3.png" --trace-ascii /dev/stdout
 		httpRouteMatcher.post("/withmultipart", new Handler<HttpServerRequest>() {
 			@Override
@@ -84,7 +95,7 @@ public class MainVerticle extends Verticle {
 				mApiOfWithMultiPart.execute(vertx, bridge_between_server_and_client);
 			}
 		});
-		
+
 		httpRouteMatcher.noMatch(new Handler<HttpServerRequest>() {
 			@Override
 			public void handle(HttpServerRequest req) {
