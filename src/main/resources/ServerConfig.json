@@ -1,0 +1,16 @@
+{
+    "DbConnectionParam": {
+        "address": "backend",
+        "connection": "MySQL",
+        "host": "localhost",
+        "port": 3306,
+        "username": "root",
+        "password": "123456",
+        "database": "nabicloud"
+    },
+    "switch": {
+        "apikey_switch": "api_key_dev"
+    },
+    "api_key_dev": "1234567890abcdef",
+    "api_key_production": "1234567890abcdef"
+}

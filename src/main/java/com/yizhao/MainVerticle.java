@@ -18,6 +18,8 @@ package com.yizhao;
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
 
+import java.io.IOException;
+
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
 import org.vertx.java.core.Handler;
@@ -31,6 +33,7 @@ import org.vertx.java.platform.Verticle;
  This is a simple Java verticle which receives `ping` messages on the event bus and sends back `pong` replies
  */
 public class MainVerticle extends Verticle {
+	SingletonOfConfig mSingletonOfConfig = SingletonOfConfig.getInstance();
 	ApiOfPost mApiOfPost;
 	ApiOfGet mApiOfGet;
 	ApiOfDelete mApiOfDelete;
@@ -38,26 +41,14 @@ public class MainVerticle extends Verticle {
 	SingletonOfConstantsS cs = SingletonOfConstantsS.getInstance();
 
 	private void init() {
-		/*
-		 * {
-		 * "address" : <event-bus-addres-to-listen-on>,
-		 * "connection" : <MySQL|PostgreSQL>,
-		 * "host" : <your-host>,
-		 * "port" : <your-port>,
-		 * "maxPoolSize" : <maximum-number-of-open-connections>,
-		 * "username" : <your-username>,
-		 * "password" : <your-password>,
-		 * "database" : <name-of-your-database>
-		 * }
-		 */
-		JsonObject dbConfig = new JsonObject();
-		dbConfig.putString("address", "backend");
-		dbConfig.putString("connection", "MySQL");
-		dbConfig.putString("host", "localhost");
-		dbConfig.putNumber("port", 3306);
-		dbConfig.putString("username", "root");
-		dbConfig.putString("password", "123456");
-		dbConfig.putString("database", "testdb");
+		JsonObject dbConfig = null;
+		try {
+			dbConfig = mSingletonOfConfig.getDbConnectionParam();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		container.deployModule("io.vertx~mod-mysql-postgresql_2.10~0.3.1", dbConfig, new AsyncResultHandler<String>() {
 			public void handle(AsyncResult<String> asyncResult) {
 				System.out.println("MySQL/Postgres module deployment ID: " + asyncResult.result());
