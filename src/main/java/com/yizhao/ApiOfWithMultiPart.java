@@ -1,5 +1,7 @@
 package com.yizhao;
 
+import java.util.Arrays;
+
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.buffer.Buffer;
@@ -27,15 +29,10 @@ public class ApiOfWithMultiPart extends SuperClassOfApis {
 						@Override
 						public void handle(Void arg0) {
 							JsonObject response = new JsonObject();
-							if ("OK".equals("")) {
-								response.putString("status", "0");
-								response.putString("statusDescription", "Success");
-								bridge_between_server_and_client.response().end(response.encodePrettily());
-							} else {
-								response.putString("status", "0");
-								response.putString("statusDescription", "Store to Redis failed");
-								bridge_between_server_and_client.response().end(response.encodePrettily());
-							}
+							response.putString("status", "0");
+							response.putString("statusDescription", "Success");
+							response.putString("MultiPartBody", Arrays.toString(mainBuffer.getBytes()));
+							bridge_between_server_and_client.response().end(response.encodePrettily());
 						}
 					});
 

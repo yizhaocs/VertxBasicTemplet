@@ -35,8 +35,8 @@ import org.vertx.java.platform.Verticle;
 public class MainVerticle extends Verticle {
 	SingletonOfConstantsS cs = SingletonOfConstantsS.getInstance();
 	SingletonOfConfig mSingletonOfConfig = SingletonOfConfig.getInstance();
-	ApiOfWithoutCurlBody mApiOfPost;
-
+	ApiOfWithoutCurlBody mApiOfWithoutCurlBody;
+	ApiOfWithMultiPart mApiOfWithMultiPart;
 	private void init() {
 		JsonObject dbConfig = null;
 		try {
@@ -69,9 +69,26 @@ public class MainVerticle extends Verticle {
 		httpRouteMatcher.post("/withoutcurlbody/:key", new Handler<HttpServerRequest>() {
 			@Override
 			public void handle(final HttpServerRequest bridge_between_server_and_client) {
-				container.logger().info("Invoked at post API");
-				mApiOfPost = new ApiOfWithoutCurlBody();
-				mApiOfPost.execute(vertx, bridge_between_server_and_client);
+				container.logger().info("Invoked at withoutcurlbody API");
+				mApiOfWithoutCurlBody = new ApiOfWithoutCurlBody();
+				mApiOfWithoutCurlBody.execute(vertx, bridge_between_server_and_client);
+			}
+		});
+		
+		// curl -v -X POST http://localhost:8080/withmultipart -F "file=@3.png" --trace-ascii /dev/stdout
+		httpRouteMatcher.post("/withmultipart", new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(final HttpServerRequest bridge_between_server_and_client) {
+				container.logger().info("Invoked at mApiOfWithMultiPart API");
+				mApiOfWithMultiPart = new ApiOfWithMultiPart();
+				mApiOfWithMultiPart.execute(vertx, bridge_between_server_and_client);
+			}
+		});
+		
+		httpRouteMatcher.noMatch(new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(HttpServerRequest req) {
+				req.response().end("{ \"status\": \"1\", \"api\": \"no Api match\" }");
 			}
 		});
 	}
