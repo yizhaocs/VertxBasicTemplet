@@ -33,12 +33,9 @@ import org.vertx.java.platform.Verticle;
  This is a simple Java verticle which receives `ping` messages on the event bus and sends back `pong` replies
  */
 public class MainVerticle extends Verticle {
-	SingletonOfConfig mSingletonOfConfig = SingletonOfConfig.getInstance();
-	ApiOfPost mApiOfPost;
-	ApiOfGet mApiOfGet;
-	ApiOfDelete mApiOfDelete;
-	
 	SingletonOfConstantsS cs = SingletonOfConstantsS.getInstance();
+	SingletonOfConfig mSingletonOfConfig = SingletonOfConfig.getInstance();
+	ApiOfWithoutCurlBody mApiOfPost;
 
 	private void init() {
 		JsonObject dbConfig = null;
@@ -68,33 +65,13 @@ public class MainVerticle extends Verticle {
 		httpServer.requestHandler(httpRouteMatcher);
 		httpServer.listen(8080, "0.0.0.0");
 
-		// curl -v -X POST http://localhost:8080/post/a -F "file=@3.png" --trace-ascii /dev/stdout
-		httpRouteMatcher.post("/post/:key", new Handler<HttpServerRequest>() {
+		// curl -v -X POST http://localhost:8080/withoutcurlbody/apple
+		httpRouteMatcher.post("/withoutcurlbody/:key", new Handler<HttpServerRequest>() {
 			@Override
 			public void handle(final HttpServerRequest bridge_between_server_and_client) {
 				container.logger().info("Invoked at post API");
-				mApiOfPost = new ApiOfPost();
-				mApiOfPost.post(vertx, bridge_between_server_and_client);
-			}
-		});
-
-		// curl -v -X GET http://localhost:8080/get/a
-		httpRouteMatcher.get("/get/:key", new Handler<HttpServerRequest>() {
-			@Override
-			public void handle(final HttpServerRequest bridge_between_server_and_client) {
-				container.logger().info("Invoked at get API");
-				mApiOfGet = new ApiOfGet();
-				mApiOfGet.get(vertx, bridge_between_server_and_client);
-			}
-		});
-
-		// curl -v -X DELETE http://localhost:8080/delete/a
-		httpRouteMatcher.delete("/delete/:key", new Handler<HttpServerRequest>() {
-			@Override
-			public void handle(final HttpServerRequest bridge_between_server_and_client) {
-				container.logger().info("Invoked at delete API");
-				mApiOfDelete = new ApiOfDelete();
-				mApiOfDelete.delete(vertx, bridge_between_server_and_client);
+				mApiOfPost = new ApiOfWithoutCurlBody();
+				mApiOfPost.execute(vertx, bridge_between_server_and_client);
 			}
 		});
 	}

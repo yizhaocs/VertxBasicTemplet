@@ -8,14 +8,15 @@ import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.http.HttpServerFileUpload;
 import org.vertx.java.core.http.HttpServerRequest;
+import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
-public class ApiOfPost extends SuperClassOfApis {
-	public ApiOfPost() {
+public class ApiOfWithCurlBodyApi extends SuperClassOfApis {
+	public ApiOfWithCurlBodyApi() {
 
 	}
-
-	public void post(final Vertx vertx, final HttpServerRequest bridge_between_server_and_client){
+	
+	public void execute(final Vertx vertx, final HttpServerRequest bridge_between_server_and_client){
 		try {
 			bridge_between_server_and_client.expectMultiPart(true);
 			bridge_between_server_and_client.uploadHandler(new Handler<HttpServerFileUpload>() {
@@ -63,4 +64,5 @@ public class ApiOfPost extends SuperClassOfApis {
 			
 		}
 	}
+
 }
