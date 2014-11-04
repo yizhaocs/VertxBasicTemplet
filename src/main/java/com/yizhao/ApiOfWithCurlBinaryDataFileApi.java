@@ -1,5 +1,7 @@
 package com.yizhao;
 
+import java.util.Arrays;
+
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.buffer.Buffer;
@@ -21,7 +23,7 @@ public class ApiOfWithCurlBinaryDataFileApi extends SuperClassOfApis {
 				JsonObject response = new JsonObject();
 				response.putString("status", "0");
 				response.putString("statusDescription", "OK");
-				response.putBinary("Binary Data", buffer.getBytes());
+				response.putString("Binary Data", Arrays.toString(buffer.getBytes()));
 				bridge_between_server_and_client.response().end(response.encodePrettily());
 			}
 		});
