@@ -18,15 +18,12 @@ package com.yizhao;
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
 
-import java.io.IOException;
-
 import org.vertx.java.core.AsyncResult;
 import org.vertx.java.core.AsyncResultHandler;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.RouteMatcher;
-import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.platform.Verticle;
 
 /*
@@ -34,22 +31,15 @@ import org.vertx.java.platform.Verticle;
  */
 public class MainVerticle extends Verticle {
 	SingletonOfConstantsS cs = SingletonOfConstantsS.getInstance();
-	SingletonOfConfig mSingletonOfConfig = SingletonOfConfig.getInstance();
+	SingletonOfServerConfigSetup mSingletonOfServerConfigSetup = SingletonOfServerConfigSetup.getInstance();
 	ApiOfWithoutCurlBody mApiOfWithoutCurlBody;
 	ApiOfWithCurlJsonBodyApi mApiOfWithCurlBodyApi;
 	ApiOfWithCurlBinaryDataFileApi mApiOfWithCurlBinaryDataFileApi;
 	ApiOfWithMultiPart mApiOfWithMultiPart;
 	ApiOfWithEventBusToMySql mApiOfWithEventBusToMySql;
 
-	private void init() {
-		JsonObject dbConfig = null;
-		try {
-			dbConfig = mSingletonOfConfig.getDbConnectionParam();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		container.deployModule("io.vertx~mod-mysql-postgresql_2.10~0.3.1", dbConfig, new AsyncResultHandler<String>() {
+	private void deployMySqlModule() {
+		container.deployModule("io.vertx~mod-mysql-postgresql_2.10~0.3.1", mSingletonOfServerConfigSetup.getDBconfig(), new AsyncResultHandler<String>() {
 			public void handle(AsyncResult<String> asyncResult) {
 				System.out.println("MySQL/Postgres module deployment ID: " + asyncResult.result());
 				System.out.println("MySQL/Postgres module deployment failed: " + asyncResult.failed());
@@ -60,9 +50,9 @@ public class MainVerticle extends Verticle {
 			}
 		});
 	}
-
+	
 	public void start() {
-		init();
+		deployMySqlModule();
 		RouteMatcher httpRouteMatcher = new RouteMatcher();
 		HttpServer httpServer = vertx.createHttpServer();
 		httpServer.requestHandler(httpRouteMatcher);
