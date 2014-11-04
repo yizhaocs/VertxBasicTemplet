@@ -36,7 +36,8 @@ public class MainVerticle extends Verticle {
 	SingletonOfConstantsS cs = SingletonOfConstantsS.getInstance();
 	SingletonOfConfig mSingletonOfConfig = SingletonOfConfig.getInstance();
 	ApiOfWithoutCurlBody mApiOfWithoutCurlBody;
-	ApiOfWithCurlBodyApi mApiOfWithCurlBodyApi;
+	ApiOfWithCurlJsonBodyApi mApiOfWithCurlBodyApi;
+	ApiOfWithCurlBinaryDataFileApi mApiOfWithCurlBinaryDataFileApi;
 	ApiOfWithMultiPart mApiOfWithMultiPart;
 	ApiOfWithEventBusToMySql mApiOfWithEventBusToMySql;
 
@@ -82,11 +83,21 @@ public class MainVerticle extends Verticle {
 			@Override
 			public void handle(final HttpServerRequest bridge_between_server_and_client) {
 				container.logger().info("Invoked at withcurlbody API");
-				mApiOfWithCurlBodyApi = new ApiOfWithCurlBodyApi();
+				mApiOfWithCurlBodyApi = new ApiOfWithCurlJsonBodyApi();
 				mApiOfWithCurlBodyApi.execute(vertx, bridge_between_server_and_client);
 			}
 		});
 
+		// curl -v --request POST --data-binary "@3.png" http://localhost:8080/withbinarydatafile  --trace-ascii /dev/stdout 
+		httpRouteMatcher.post("/withbinarydatafile", new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(final HttpServerRequest bridge_between_server_and_client) {
+				container.logger().info("Invoked at withbinarydatafile API");
+				mApiOfWithCurlBinaryDataFileApi = new ApiOfWithCurlBinaryDataFileApi();
+				mApiOfWithCurlBinaryDataFileApi.execute(vertx, bridge_between_server_and_client);
+			}
+		});
+		
 		// curl -v -X POST http://localhost:8080/withmultipart -F "file=@3.png" --trace-ascii /dev/stdout
 		httpRouteMatcher.post("/withmultipart", new Handler<HttpServerRequest>() {
 			@Override
@@ -106,6 +117,8 @@ public class MainVerticle extends Verticle {
 				mApiOfWithEventBusToMySql.execute(vertx, bridge_between_server_and_client);
 			}
 		});
+		
+		
 
 		httpRouteMatcher.noMatch(new Handler<HttpServerRequest>() {
 			@Override
