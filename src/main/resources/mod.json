@@ -1,5 +1,5 @@
 {
-  "main":"com.yizhao.MainVerticle",
+  "main":"com.yizhao.MainServerVerticle",
 
   // If your module is going to be registered in the Vert.x module registry you will also need the following
   // mandatory fields
