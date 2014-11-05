@@ -36,23 +36,13 @@ public class MainServerVerticle extends Verticle {
 	ApiOfWithCurlJsonBodyApi mApiOfWithCurlBodyApi;
 	ApiOfWithCurlBinaryDataFileApi mApiOfWithCurlBinaryDataFileApi;
 	ApiOfWithMultiPart mApiOfWithMultiPart;
-	ApiOfWithEventBusToMySql mApiOfWithEventBusToMySql;
 
-	private void deployMySqlModule() {
-		container.deployModule("io.vertx~mod-mysql-postgresql_2.10~0.3.1", mSingletonOfServerConfigSetup.getDBconfig(), new AsyncResultHandler<String>() {
-			public void handle(AsyncResult<String> asyncResult) {
-				System.out.println("MySQL/Postgres module deployment ID: " + asyncResult.result());
-				System.out.println("MySQL/Postgres module deployment failed: " + asyncResult.failed());
-				if (asyncResult.failed()) {
-					System.out.println("MySQL/Postgres module deployment asyncResult.cause printStackTrace: ");
-					asyncResult.cause().printStackTrace();
-				}
-			}
-		});
+	private void deployXXXModule() {
+		
 	}
 	
 	public void start() {
-		deployMySqlModule();
+		deployXXXModule();
 		RouteMatcher httpRouteMatcher = new RouteMatcher();
 		HttpServer httpServer = vertx.createHttpServer();
 		httpServer.requestHandler(httpRouteMatcher);
@@ -97,18 +87,7 @@ public class MainServerVerticle extends Verticle {
 				mApiOfWithMultiPart.execute(vertx, bridge_between_server_and_client);
 			}
 		});
-		
-		// curl -v -X POST http://localhost:8080/apiofwitheventbustomysql
-		httpRouteMatcher.post("/apiofwitheventbustomysql", new Handler<HttpServerRequest>() {
-			@Override
-			public void handle(final HttpServerRequest bridge_between_server_and_client) {
-				container.logger().info("Invoked at mApiOfWithEventBusToMySql API");
-				mApiOfWithEventBusToMySql = new ApiOfWithEventBusToMySql();
-				mApiOfWithEventBusToMySql.execute(vertx, bridge_between_server_and_client);
-			}
-		});
-		
-		
+				
 
 		httpRouteMatcher.noMatch(new Handler<HttpServerRequest>() {
 			@Override
