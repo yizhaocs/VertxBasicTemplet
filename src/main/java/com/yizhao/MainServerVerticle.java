@@ -34,7 +34,8 @@ public class MainServerVerticle extends Verticle {
 	SingletonOfServerConfigSetup mSingletonOfServerConfigSetup = SingletonOfServerConfigSetup.getInstance();
 	ApiOfWithoutCurlBody mApiOfWithoutCurlBody;
 	ApiOfWithCurlJsonBodyApi mApiOfWithCurlBodyApi;
-	ApiOfWithCurlBinaryDataFileApi mApiOfWithCurlBinaryDataFileApi;
+	ApiOfWithCurlBinaryDataFileApiUsingBodyHandler mApiOfWithCurlBinaryDataFileUsingBodyHandlerApi;
+	ApiOfWithCurlBinaryDataFileApiUsingDataHandler mApiOfWithCurlBinaryDataFileUsingDataHandlerApi;
 	ApiOfWithMultiPart mApiOfWithMultiPart;
 
 	private void deployXXXModule() {
@@ -68,13 +69,23 @@ public class MainServerVerticle extends Verticle {
 			}
 		});
 
-		// curl -v --request POST --data-binary "@3.png" http://localhost:8080/withbinarydatafile  --trace-ascii /dev/stdout 
-		httpRouteMatcher.post("/withbinarydatafile", new Handler<HttpServerRequest>() {
+		// curl -v --request POST --data-binary "@3.png" http://localhost:8080/withbinarydatafileusingbodyhandler  --trace-ascii /dev/stdout 
+		httpRouteMatcher.post("/withbinarydatafileusingbodyhandler", new Handler<HttpServerRequest>() {
 			@Override
 			public void handle(final HttpServerRequest bridge_between_server_and_client) {
-				container.logger().info("Invoked at withbinarydatafile API");
-				mApiOfWithCurlBinaryDataFileApi = new ApiOfWithCurlBinaryDataFileApi();
-				mApiOfWithCurlBinaryDataFileApi.execute(vertx, bridge_between_server_and_client);
+				container.logger().info("Invoked at withbinarydatafileusingbodyhandler API");
+				mApiOfWithCurlBinaryDataFileUsingBodyHandlerApi = new ApiOfWithCurlBinaryDataFileApiUsingBodyHandler();
+				mApiOfWithCurlBinaryDataFileUsingBodyHandlerApi.execute(vertx, bridge_between_server_and_client);
+			}
+		});
+		
+		// curl -v --request POST --data-binary "@3.png" http://localhost:8080/withbinarydatafileusingdatahandler  --trace-ascii /dev/stdout 
+		httpRouteMatcher.post("/withbinarydatafileusingdatahandler", new Handler<HttpServerRequest>() {
+			@Override
+			public void handle(final HttpServerRequest bridge_between_server_and_client) {
+				container.logger().info("Invoked at withbinarydatafileusingdatahandler API");
+				mApiOfWithCurlBinaryDataFileUsingDataHandlerApi = new ApiOfWithCurlBinaryDataFileApiUsingDataHandler();
+				mApiOfWithCurlBinaryDataFileUsingDataHandlerApi.execute(vertx, bridge_between_server_and_client);
 			}
 		});
 		

@@ -8,8 +8,8 @@ import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.json.JsonObject;
 
-public class ApiOfWithCurlBinaryDataFileApi extends SuperClassOfApis {
-	public ApiOfWithCurlBinaryDataFileApi() {
+public class ApiOfWithCurlBinaryDataFileApiUsingBodyHandler extends SuperClassOfApis {
+	public ApiOfWithCurlBinaryDataFileApiUsingBodyHandler() {
 
 	}
 
